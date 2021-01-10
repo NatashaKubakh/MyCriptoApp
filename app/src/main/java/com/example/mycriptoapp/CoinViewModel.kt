@@ -12,9 +12,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
 
-    private val db = AppDatabase.getInstance(application)
+//    private val db = AppDatabase.getInstance(application)
     private val compositeDisposable = CompositeDisposable()
-    val priceList = db.coinPriceInfoDao().getPriceList()
+ //   val priceList = db.coinPriceInfoDao().getPriceList()
 
     fun loadData() {
         val disposable = ApiFactory.apiService.getTopCoinsInfo()
