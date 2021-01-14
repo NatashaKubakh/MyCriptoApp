@@ -3,6 +3,7 @@ package com.example.mycriptoapp
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import com.example.mycriptoapp.api.ApiFactory
 import com.example.mycriptoapp.database.AppDatabase
 import com.example.mycriptoapp.pojo.CoinPriceInfo
@@ -10,6 +11,7 @@ import com.example.mycriptoapp.pojo.CoinPriceInfoRawData
 import com.google.gson.Gson
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,11 +20,24 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
     private val compositeDisposable = CompositeDisposable()
     val priceList = db.coinPriceInfoDao().getPriceList()
 
-    fun loadData() {
+    init {
+        loadData()
+    }
+
+    fun getDetailInfo(fSym: String): LiveData<CoinPriceInfo> {
+        return db.coinPriceInfoDao().getPriceInfoAboutCoin(fSym)
+    }
+
+    private fun loadData() {
         val disposable = ApiFactory.apiService.getTopCoinsInfo(limit = 20)
             .map { it -> it.data?.map { it.coinInfo?.name }?.joinToString(",") }
             .flatMap { it?.let { ApiFactory.apiService.getFullPriceList(fSyms = it) } }
-            .map { getPriceListFromRawData(it) }
+            .map {
+                getPriceListFromRawData(it)
+            }
+            .delaySubscription(10, TimeUnit.SECONDS)
+            .repeat()
+            .retry()
             .subscribeOn(Schedulers.io())
             .subscribe({
                 it?.let {
