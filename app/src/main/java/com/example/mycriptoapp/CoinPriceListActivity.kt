@@ -2,7 +2,6 @@ package com.example.mycriptoapp
 
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -10,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.mycriptoapp.adapters.CoinInfoAdapter
 import com.example.mycriptoapp.databinding.ActivityCoinPriceListBinding
 import com.example.mycriptoapp.pojo.CoinPriceInfo
+import com.example.mycriptoapp.viewModels.CoinViewModel
 
 
 class CoinPriceListActivity : AppCompatActivity() {
@@ -25,7 +25,11 @@ class CoinPriceListActivity : AppCompatActivity() {
         binding.rvCoinPriceList.adapter = adapter
         adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
             override fun onCoinClick(coinPriceInfo: CoinPriceInfo) {
-                Log.d("TEST_OF_LOADING_DATA", coinPriceInfo.fromSymbol)
+                val intent = CoinDetailActivity.newIntent(
+                    this@CoinPriceListActivity,
+                    coinPriceInfo.fromSymbol
+                )
+                startActivity(intent)
             }
         }
         viewModel = ViewModelProvider.AndroidViewModelFactory(this.application)

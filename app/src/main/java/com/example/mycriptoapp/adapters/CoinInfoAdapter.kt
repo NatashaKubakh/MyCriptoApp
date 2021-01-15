@@ -40,11 +40,12 @@ class CoinInfoAdapter(private val context: Context) :
         val lastUpdate = context.resources.getString(R.string.last_update_time)
         binding.coinFromSymbolToSymbol =
             String.format(symbolsTemplate, coin.fromSymbol, coin.toSymbol)
+        //Log.d("TEST_OF_LOADING_DATA", binding.coinFromSymbolToSymbol.toString())
         binding.tvDate.text = String.format(lastUpdate, coin.getFormattedTime())
-        binding.tvPrice.text = coin.price.toString()
-        Log.d("TEST_OF_LOADING_DATA", coin.price.toString())
+        binding.coinPrice = coin.price.toString()
+        //Log.d("TEST_OF_LOADING_DATA", coin.price.toString())
         Picasso.get().load(coin.getFullImageUrl()).into(binding.ivLogoCoin)
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             onCoinClickListener?.onCoinClick(coin)
         }
 

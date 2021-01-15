@@ -1,4 +1,4 @@
-package com.example.mycriptoapp
+package com.example.mycriptoapp.viewModels
 
 import android.app.Application
 import android.util.Log
@@ -35,7 +35,7 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
             .map {
                 getPriceListFromRawData(it)
             }
-            .delaySubscription(10, TimeUnit.SECONDS)
+            .delaySubscription(20, TimeUnit.SECONDS)
             .repeat()
             .retry()
             .subscribeOn(Schedulers.io())
