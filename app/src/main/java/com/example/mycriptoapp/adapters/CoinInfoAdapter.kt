@@ -23,7 +23,9 @@ class CoinInfoAdapter(private val context: Context) :
 
     inner class CoinInfoViewHolder(binding: ItemCoinInfoBinding) :
         RecyclerView.ViewHolder(binding.root) {
-    }
+            val binding: ItemCoinInfoBinding = binding
+        }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinInfoViewHolder {
         binding = DataBindingUtil.inflate(
@@ -38,16 +40,17 @@ class CoinInfoAdapter(private val context: Context) :
         val coin = coinInfoList[position]
         val symbolsTemplate = context.resources.getString(R.string.symbols_template)
         val lastUpdate = context.resources.getString(R.string.last_update_time)
-        binding.coinFromSymbolToSymbol =
+        holder.binding.coinFromSymbolToSymbol =
             String.format(symbolsTemplate, coin.fromSymbol, coin.toSymbol)
         //Log.d("TEST_OF_LOADING_DATA", binding.coinFromSymbolToSymbol.toString())
-        binding.tvDate.text = String.format(lastUpdate, coin.getFormattedTime())
-        binding.coinPrice = coin.price.toString()
+        holder.binding.tvDate.text = String.format(lastUpdate, coin.getFormattedTime())
+        holder.binding.coinPrice = coin.price.toString()
         //Log.d("TEST_OF_LOADING_DATA", coin.price.toString())
         Picasso.get().load(coin.getFullImageUrl()).into(binding.ivLogoCoin)
         holder.itemView.setOnClickListener {
             onCoinClickListener?.onCoinClick(coin)
         }
+        holder.binding.executePendingBindings()
 
     }
 
